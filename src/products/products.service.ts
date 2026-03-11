@@ -1,17 +1,16 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class ProductsService {
-  constructor(private axios: HttpService) {}
+  constructor(@Inject('PRODUCT_SERVICE') private client: ClientProxy) {}
+  findAll() {
+    return this.client.send({ cmd: 'get_products' }, {});
+  }
 
-  async findAll() {
-    const res = await firstValueFrom(
-      this.axios.get('http://localhost:8004/products'),
-    );
-    if (!res.data) throw new NotFoundException('No products found');
-    console.log({ data: res.data });
-    return res.data;
+  create(product) {
+    return this.client.send({ cmd: 'create_product' }, product);
   }
 }
