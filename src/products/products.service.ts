@@ -2,6 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
+import { CreateProductDto } from './dtos/create-product.dto';
 
 @Injectable()
 export class ProductsService {
@@ -10,7 +11,7 @@ export class ProductsService {
     return this.client.send({ cmd: 'get_products' }, {});
   }
 
-  create(product) {
+  create(product: CreateProductDto) {
     return this.client.send({ cmd: 'create_product' }, product);
   }
 }
